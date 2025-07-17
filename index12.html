@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Portale Studenti</title>
+<style>
+  /* STILI sidebar, main e altre sezioni già presenti come sopra... */
+  /* Aggiungiamo stili per calendario */
+  #calendario {
+    max-width: 700px;
+  }
+  .calendar {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    user-select: none;
+  }
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .calendar-header button {
+    background: #4f46e5;
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .calendar-header .month-year {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+  }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+  }
+  .day-name {
+    font-weight: 700;
+    color: #666;
+    text-align: center;
+  }
+  .day {
+    text-align: center;
+    padding: 10px 6px;
+    border-radius: 8px;
+    cursor: default;
+    font-weight: 600;
+    user-select: none;
+  }
+  .day.empty {
+    background: transparent;
+    cursor: default;
+  }
+  .day.today {
+    background: #4f46e5;
+    color: white;
+  }
+  .day.event {
+    background: #dbeafe;
+    border: 2px solid #3b82f6;
+    cursor: pointer;
+  }
+  .day.event:hover {
+    background: #bfdbfe;
+  }
+
+  /* Popup eventi */
+  #event-popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    padding: 20px 30px;
+    max-width: 320px;
+    display: none;
+    z-index: 1000;
+  }
+  #event-popup h3 {
+    margin-top: 0;
+    font-size: 22px;
+    color: #1e40af;
+  }
+  #event-popup p {
+    font-size: 16px;
+    color: #374151;
+  }
+  #event-popup button.close {
+    margin-top: 20px;
+    background: #ef4444;
+    border: none;
+    color: white;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+  }
+  /* Overlay per popup */
+  #overlay {
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    z-index: 900;
+  }
+     body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f9fafb;
+    }
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 240px;
+      height: 100%;
+      background: #e9f0f7;
+      padding: 20px;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+    }
+    .sidebar img {
+      width: 80px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .sidebar h2 {
+      font-size: 18px;
+      margin: 0 0 30px 0;
+      text-align: center;
+      line-height: 1.2;
+    }
+    .sidebar a {
+      display: block;
+      margin: 10px 0;
+      text-decoration: none;
+      color: #333;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .sidebar a:hover, 
+    .sidebar a.active {
+      background: #d4e8ff;
+      font-weight: 700;
+      color: #1e40af;
+    }
+    .main {
+      margin-left: 260px;
+      padding: 30px;
+    }
+    .hero {
+      background: linear-gradient(to right, #4f46e5, #9333ea, #059669);
+      color: white;
+      border-radius: 16px;
+      padding: 30px;
+    }
+    .hero h1 {
+      font-size: 32px;
+      margin: 0;
+    }
+    .hero p {
+      margin-top: 10px;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+    .hero-buttons {
+      margin-top: 20px;
+    }
+    .hero-buttons button {
+      margin-right: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .hero-buttons .proposta { 
+      background: white; 
+      color: black; 
+    }
+    .hero-buttons .proposta:hover {
+      background: #e5e7eb;
+    }
+    .hero-buttons .comunicazioni { 
+      background: #4f46e5; 
+      color: white; 
+    }
+    .hero-buttons .comunicazioni:hover {
+      background: #4338ca;
+    }
+    /* Sezioni nascoste di default */
+    .section {
+      display: none;
+    }
+    .section.active {
+      display: block;
+    }
+    /* Rimuove l'outline azzurro sulle sezioni quando sono focusate */
+    .section:focus {
+      outline: none;
+    }
+    .section h2 {
+      font-size: 22px;
+      margin-bottom: 20px;
+      font-weight: 700;
+      color: #111827;
+    }
+    .card-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      width: calc(25% - 20px);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      font-weight: 600;
+      color: #1f2937;
+      cursor: pointer;
+      user-select: none;
+      transition: box-shadow 0.2s;
+    }
+    .card:hover, .card:focus {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      outline: none;
+    }
+    .card .title {
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .card .desc {
+      font-size: 14px;
+      margin-top: 5px;
+      color: #374151;
+      font-weight: 400;
+    }
+    .btn-accedi {
+      margin-top: 15px;
+      padding: 8px;
+      width: 100%;
+      border: none;
+      background: #111827;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .btn-accedi:hover {
+      background: #1f2937;
+    }
+    .updates {
+      margin-top: 30px;
+    }
+    .update {
+      background: white;
+      padding: 24px;
+      margin-bottom: 16px;
+      border-radius: 16px;
+      border-left: 4px solid transparent;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.07);
+      font-size: 16px;
+      color: #111827;
+      font-weight: 500;
+    }
+    .update.urgente {
+      border-left: 4px solid #f97316;
+      border: 1px solid #f97316;
+      color: #b45309;
+    }
+    .update .titolo {
+      font-weight: 700;
+      margin-bottom: 6px;
+      font-size: 18px;
+    }
+    .badge {
+      background: #e5e7eb;
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 8px;
+      margin-left: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #374151;
+    }
+    .badge.urgente { 
+      background: #ef4444; 
+      color: white; 
+    }
+    .anno-scolastico {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: #10b981;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: 0 2px 6px rgba(16,185,129,0.6);
+      user-select: none;
+    }
+    /* Calendario styling */
+    #calendario .update {
+      border-left-color: #3b82f6;
+      border-color: #3b82f6;
+      color: #1e3a8a;
+    }
+    #calendario h3 {
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #2563eb;
+    }
+    #calendario div.grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      gap: 12px;
+      margin-top: 16px;
+      font-weight: 600;
+      color: #6b7280;
+      user-select: none;
+    }
+    #calendario div.grid strong {
+      color: #111827;
+    }
+    #calendario div.grid div {
+      padding: 6px 0;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+      cursor: default;
+    }
+    #calendario div.grid div.active-day {
+      background-color: #3b82f6;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    #eventi-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.evento-card {
+  background: white;
+  padding: 14px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.evento-card:hover {
+  background-color: #eff6ff;
+}
+
+.evento-data {
+  font-weight: 700;
+  font-size: 18px;
+  color: #2563eb;
+}
+
+.evento-ora-giorno {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.evento-titolo {
+  font-weight: 600;
+  font-size: 16px;
+  color: #111827;
+  margin-top: 8px;
+}
+
+</style>
+</head>
+
+<body>
+  <!-- Sidebar e main già presenti -->
+
+  <div class="sidebar">
+    <img src="logo.png" alt="Logo Uniti per il Manzoni" />
+    <h2>Uniti per il<br>Manzoni</h2>
+    <a href="#home" class="active">Home</a>
+    <a href="#comunicazioni">Comunicazioni</a>
+    <a href="#calendario">Calendario Eventi</a>
+    <a href="#proposte">Proposte e Votazioni</a>
+    <a href="#archivio">Archivio Votazioni</a>
+    <a href="#segnalazioni">Segnalazioni</a>
+    <a href="#tornei">Tornei</a>
+    <a href="#risorse">Risorse Utili</a>
+  </div>
+
+  <main class="main">
+    <section class="section active" id="home">
+      <!-- Contenuto Home come sopra -->
+      <div class="hero">
+        <h1>Benvenuto nel Portale Studenti</h1>
+        <p>La voce degli studenti, il cuore della partecipazione</p>
+        <p>Qui puoi consultare comunicazioni, partecipare alle votazioni, proporre miglioramenti e rimanere sempre aggiornato sulla vita del nostro istituto.</p>
+        <div class="hero-buttons">
+          <button class="proposta">➕ Nuova Proposta</button>
+          <button class="comunicazioni">📢 Leggi Comunicazioni</button>
+        </div>
+      </div>
+      <!-- Accesso rapido e aggiornamenti recenti, come prima -->
+      <div aria-label="Accesso rapido" style="margin-top: 30px;">
+        <h2>Accesso Rapido</h2>
+        <div class="card-container">
+          <div class="card" role="button" tabindex="0" aria-pressed="false">
+            <div class="title">📢 Nuove Comunicazioni</div>
+            <div class="desc">Leggi gli ultimi avvisi dei rappresentanti</div>
+            <button class="btn-accedi">Visualizza</button>
+          </div>
+          <div class="card" role="button" tabindex="0" aria-pressed="false">
+            <div class="title">📅 Prossimi Eventi</div>
+            <div class="desc">Controlla il calendario scolastico</div>
+            <button class="btn-accedi">Visualizza</button>
+          </div>
+          <div class="card" role="button" tabindex="0" aria-pressed="false">
+            <div class="title">🗳️ Vota Ora</div>
+            <div class="desc">Partecipa alle votazioni in corso</div>
+            <button class="btn-accedi">Vai al voto</button>
+          </div>
+          <div class="card" role="button" tabindex="0" aria-pressed="false">
+            <div class="title">⚠️ Segnalazioni</div>
+            <div class="desc">Invia suggerimenti e segnalazioni</div>
+            <button class="btn-accedi">Invia</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aggiornamenti recenti rimane in Home -->
+      <div class="updates" aria-label="Aggiornamenti recenti" style="margin-top: 40px;">
+        <h2>Aggiornamenti Recenti</h2>
+        <div class="update urgente" role="alert">
+          <div class="titolo">Attenzione! Sciopero del personale</div>
+          Le lezioni potrebbero subire modifiche il prossimo venerdì 20 giugno.
+          <span class="badge urgente">Urgente</span>
+        </div>
+    </section>
+
+    <section class="section" id="comunicazioni"><h2>Comunicazioni</h2></section>
+
+  <section class="section" id="calendario">
+  <h2>Calendario Eventi</h2>
+  <div style="display: flex; gap: 30px; max-width: 900px;">
+    <!-- Colonna Calendario -->
+    <div class="calendar" style="flex: 1; min-width: 350px;">
+      <div class="calendar-header" style="display:flex; justify-content: space-between; align-items:center;">
+        <button id="prev-month">&lt;</button>
+        <div class="month-year" id="month-year"></div>
+        <button id="next-month">&gt;</button>
+      </div>
+      <div class="calendar-grid" id="calendar-grid">
+        <div class="day-name">Dom</div>
+        <div class="day-name">Lun</div>
+        <div class="day-name">Mar</div>
+        <div class="day-name">Mer</div>
+        <div class="day-name">Gio</div>
+        <div class="day-name">Ven</div>
+        <div class="day-name">Sab</div>
+      </div>
+    </div>
+
+    <!-- Colonna destra: Pulsante + eventi inventati -->
+    <div style="flex: 1; min-width: 300px;">
+      <button id="proponi-evento-btn" style="
+        width: 100%;
+        padding: 12px 0;
+        background-color: #22c55e;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 16px;
+        cursor: pointer;
+        margin-bottom: 24px;
+      ">Proponi Evento</button>
+
+      <div id="eventi-lista">
+        <!-- Eventi inventati verranno inseriti qui -->
+        <div id="eventi-lista" style="max-height: 450px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;">
+  <div class="evento-card">
+    <div class="evento-date">📅 10 Giugno 2025</div>
+    <div class="evento-title">Giornata Sportiva</div>
+    <div class="evento-desc">Torneo di calcio e pallavolo nel cortile della scuola.</div>
+  </div>
+  <div class="evento-card">
+    <div class="evento-date">📅 12 Giugno 2025</div>
+    <div class="evento-title">Lezione Aperta</div>
+    <div class="evento-desc">Presentazione dei progetti degli studenti in aula 3.</div>
+  </div>
+  <div class="evento-card">
+    <div class="evento-date">📅 15 Giugno 2025</div>
+    <div class="evento-title">Conferenza Psicologia</div>
+    <div class="evento-desc">Incontro con esperti su benessere e stress.</div>
+  </div>
+  <div class="evento-card">
+    <div class="evento-date">📅 18 Giugno 2025</div>
+    <div class="evento-title">Prove Esame</div>
+    <div class="evento-desc">Inizio delle prove scritte degli esami finali.</div>
+  </div>
+  <div class="evento-card">
+    <div class="evento-date">📅 20 Giugno 2025</div>
+    <div class="evento-title">Sciopero del Personale</div>
+    <div class="evento-desc">Le lezioni potrebbero subire modifiche.</div>
+  </div>
+  <div class="evento-card">
+    <div class="evento-date">📅 22 Giugno 2025</div>
+    <div class="evento-title">Assemblea Studenti</div>
+    <div class="evento-desc">Riunione in aula magna alle ore 15:00.</div>
+  </div>
+  <div class="evento-card">
+    <div class="evento-date">📅 25 Giugno 2025</div>
+    <div class="evento-title">Gita al Museo</div>
+    <div class="evento-desc">Visita guidata al museo d’arte moderna.</div>
+  </div>
+  <div class="evento-card">
+    <div class="evento-date">📅 28 Giugno 2025</div>
+    <div class="evento-title">Festa di Fine Anno</div>
+    <div class="evento-desc">Celebrazione con musica e buffet in giardino.</div>
+  </div>
+  <div class="evento-card">
+    <div class="evento-date">📅 30 Giugno 2025</div>
+    <div class="evento-title">Consegna Diplomi</div>
+    <div class="evento-desc">Cerimonia di consegna diplomi per la quinta.</div>
+  </div>
+  <div class="evento-card">
+    <div class="evento-date">📅 1 Luglio 2025</div>
+    <div class="evento-title">Inizio Vacanze Estive</div>
+    <div class="evento-desc">Ultimo giorno di scuola prima delle vacanze.</div>
+  </div>
+</div>
+
+<style>
+  #eventi-lista {
+    scrollbar-width: thin;
+    scrollbar-color: #22c55e #e0e0e0;
+  }
+  #eventi-lista::-webkit-scrollbar {
+    width: 8px;
+  }
+  #eventi-lista::-webkit-scrollbar-track {
+    background: #e0e0e0;
+    border-radius: 8px;
+  }
+  #eventi-lista::-webkit-scrollbar-thumb {
+    background-color: #22c55e;
+    border-radius: 8px;
+  }
+  .evento-card {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+    padding: 14px 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(34, 197, 94, 0.5);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+  }
+  .evento-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.8);
+  }
+  .evento-date {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  .evento-title {
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .evento-desc {
+    font-size: 13px;
+    opacity: 0.9;
+  }
+</style>
+
+    </div>
+  </div>
+</section>
+
+<!-- Popup evento e overlay -->
+<div id="overlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index: 1000;"></div>
+
+<div id="event-popup" style="display:none; position:fixed; top:50%; left:50%; transform: translate(-50%, -50%);
+  background:#fff; padding:20px; border-radius:10px; box-shadow: 0 0 15px rgba(0,0,0,0.3); max-width: 300px; z-index: 1001;">
+  <h3 id="event-title"></h3>
+  <p id="event-desc"></p>
+  <button class="close" style="
+    margin-top: 15px;
+    padding: 8px 12px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  ">Chiudi</button>
+</div>
+
+<style>
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+  }
+
+  .day-name {
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .day {
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 6px;
+  }
+
+  .day.today {
+    background-color: #22c55e;
+    color: white;
+    font-weight: bold;
+  }
+
+  .day.event {
+    background-color: #3b82f6;
+    color: white;
+    cursor: pointer;
+  }
+
+  .day.empty {
+    background-color: transparent;
+    cursor: default;
+  }
+  #eventi-lista {
+    scrollbar-width: thin;
+    scrollbar-color: #22c55e #e0e0e0;
+  }
+  #eventi-lista::-webkit-scrollbar {
+    width: 8px;
+  }
+  #eventi-lista::-webkit-scrollbar-track {
+    background: #e0e0e0;
+    border-radius: 8px;
+  }
+  #eventi-lista::-webkit-scrollbar-thumb {
+    background-color: #22c55e;
+    border-radius: 8px;
+  }
+  .evento-card {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+    padding: 14px 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(34, 197, 94, 0.5);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+  }
+  .evento-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.8);
+  }
+  .evento-date {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  .evento-title {
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .evento-desc {
+    font-size: 13px;
+    opacity: 0.9;
+  }
+</style>
+
+
+
+<script>
+  // Funzione per cambiare sezione e link attivo
+  const links = document.querySelectorAll('.sidebar a');
+  const sections = document.querySelectorAll('.section');
+  links.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      links.forEach(l => l.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+
+      link.classList.add('active');
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) target.classList.add('active');
+    });
+  });
+
+  // --------- CALENDARIO ---------
+  const calendarGrid = document.getElementById('calendar-grid');
+  const monthYear = document.getElementById('month-year');
+  const prevBtn = document.getElementById('prev-month');
+  const nextBtn = document.getElementById('next-month');
+
+  // Eventi di esempio (aggiungi come vuoi)
+  // Date formato 'YYYY-MM-DD'
+  const events = {
+    '2025-06-20': {title: 'Sciopero del Personale', desc: 'Le lezioni potrebbero subire modifiche il 20 giugno.'},
+    '2025-06-25': {title: 'Assemblea Studenti', desc: 'Riunione alle ore 15:00 in aula magna.'},
+    '2025-07-01': {title: 'Inizio Vacanze Estive', desc: 'Ultimo giorno di scuola prima delle vacanze.'},
+    '2025-09-15': {title: 'Inizio della scuola', desc: 'Inizio delle lezioni.'}
+  };
+
+  let currentDate = new Date();
+
+  function renderCalendar(date) {
+    calendarGrid.querySelectorAll('.day:not(.day-name)').forEach(e => e.remove());
+
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    // Mostra mese e anno
+    const monthNames = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
+      'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+    monthYear.textContent = monthNames[month] + ' ' + year;
+
+    // Primo giorno del mese (indice settimana 0=Dom,1=Lun,...)
+    const firstDay = new Date(year, month, 1);
+    let startDay = firstDay.getDay();
+    if(startDay === 0) startDay = 7; // domenica spostata alla fine per allineare
+
+    // Numero di giorni del mese
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+
+    // Giorno odierno per evidenziare
+    const today = new Date();
+    const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+
+    // Aggiungo celle vuote per il primo giorno della settimana (lun = 1)
+    for(let i=1; i<startDay; i++) {
+      const emptyCell = document.createElement('div');
+      emptyCell.classList.add('day', 'empty');
+      calendarGrid.appendChild(emptyCell);
+    }
+
+    for(let day=1; day<=daysInMonth; day++) {
+      const dayCell = document.createElement('div');
+      dayCell.classList.add('day');
+      dayCell.textContent = day;
+
+      // Controllo se oggi
+      if(isCurrentMonth && day === today.getDate()) {
+        dayCell.classList.add('today');
+      }
+
+      // Controllo se c'è evento
+      const dayStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      if(events[dayStr]) {
+        dayCell.classList.add('event');
+        dayCell.style.cursor = 'pointer';
+        dayCell.addEventListener('click', () => showEvent(dayStr));
+      }
+
+      calendarGrid.appendChild(dayCell);
+    }
+  }
+
+  // Popup evento
+  const popup = document.getElementById('event-popup');
+  const overlay = document.getElementById('overlay');
+  const eventTitle = document.getElementById('event-title');
+  const eventDesc = document.getElementById('event-desc');
+  const closeBtn = popup.querySelector('button.close');
+
+  function showEvent(date) {
+    eventTitle.textContent = events[date].title;
+    eventDesc.textContent = events[date].desc;
+    popup.style.display = 'block';
+    overlay.style.display = 'block';
+  }
+  function closeEvent() {
+    popup.style.display = 'none';
+    overlay.style.display = 'none';
+  }
+  closeBtn.addEventListener('click', closeEvent);
+  overlay.addEventListener('click', closeEvent);
+
+  prevBtn.addEventListener('click', () => {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar(currentDate);
+  });
+  nextBtn.addEventListener('click', () => {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar(currentDate);
+  });
+
+  renderCalendar(currentDate);
+  
+     
+</script>
+
+</body>
+</html>
+
