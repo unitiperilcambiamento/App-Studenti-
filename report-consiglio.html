@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Report del Consiglio di Istituto</title>
+  <style>
+    :root {
+      --main-color: #2e86de;
+      --secondary-color: #f4f4f4;
+      --text-color: #333;
+      --font: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+    }
+
+    header {
+      background-color: var(--main-color);
+      color: white;
+      text-align: center;
+      padding: 1rem 0 0.5rem;
+    }
+
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px; /* circa 1 cm */
+      margin-bottom: 0.5rem;
+      margin-top: -0.5rem;
+    }
+
+    .logo {
+      height: 100px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    header h1 {
+      margin: 0.2em 0 0;
+      font-size: 1.8em;
+    }
+
+    header p {
+      margin: 0.2em 0 1em;
+      font-size: 1em;
+    }
+
+    .contenuto {
+      padding: 2rem;
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .contenuto h1 {
+      color: var(--main-color);
+      text-align: center;
+      font-size: 1.6em;
+      margin-bottom: 1rem;
+    }
+
+    .contenuto h2 {
+      color: #2c3e50;
+      margin-top: 1.5em;
+    }
+
+    .contenuto p {
+      margin: 0.8em 0;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+      .logo-container {
+        flex-direction: column;
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <img src="manzoni-logo.png" alt="Logo Istituto Manzoni" class="logo" />
+      <img src="lista.png" alt="Logo Lista Studenti" class="logo" />
+    </div>
+    <h1>Comunicazione 1</h1>
+    <p>Istituto Manzoni</p>
+  </header>
+
+
+
+  <div class="contenuto">
+    <h1>Report del Consiglio di Istituto</h1>
+
+    <p>Durante l'ultimo Consiglio di Istituto, gli studenti hanno presentato richieste e proposte su vari aspetti della vita scolastica. Di seguito il resoconto completo.</p>
+
+    <h2>Wi-Fi</h2>
+    <p>È stata segnalata la scarsa copertura della rete scolastica in alcune aree, specialmente nella palazzina B e nelle aule studio al secondo piano. Gli studenti chiedono il potenziamento della rete Wi-Fi tramite nuovi access point.</p>
+
+    <h2>Biblioteca</h2>
+    <p>Proposta l'estensione dell'orario di apertura, soprattutto durante i periodi di studio intensivo. Richiesta anche una maggiore disponibilità di testi utili per lo studio e la lettura personale.</p>
+
+    <h2>Spazi studio</h2>
+    <p>Richiesta l’assegnazione di un’aula inutilizzata da adibire a spazio studio pomeridiano per gli studenti, per poter rimanere in istituto a studiare in tranquillità.</p>
+
+    <h2>Comunicazione interna</h2>
+    <p>Proposta l’introduzione di un modulo online per inviare segnalazioni o proposte direttamente alla dirigenza o ai rappresentanti.</p>
+
+    <p>Il Consiglio si è dimostrato disponibile ad approfondire le richieste e ha assicurato un aggiornamento nei prossimi incontri.</p>
+  </div>
+</body>
+</html>
