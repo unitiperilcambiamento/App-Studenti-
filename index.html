@@ -8,6 +8,29 @@
   <link rel="icon" href="manzoni-logo.png" type="image/png">
   <style>
 	  
+	 
+
+	 
+	 
+	 
+	 
+	 .section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+}
+
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
 	  
 	  
 	proposte-title {
@@ -759,7 +782,7 @@
       <a href="#" onclick="showSection('tornei'); return false;">Tornei</a>
       <a href="#" onclick="showSection('promesse'); return false;">Promesse</a>
       <a href="#" onclick="showSection('documenti'); return false;">Documenti</a>
-      <a href="#" onclick="showSection('segnalazioni'); return false;">Segnalazioni</a>    
+      <a href="#" onclick="showSection('segnalazioni'); return false;">Segnalazioni</a>      
     </div>
   </div>
   
@@ -1004,14 +1027,14 @@
       Le classi 1ª e 2ª entreranno <strong>alle ore 8:00</strong> nell’Ala Rossa; tutte le altre classi alle ore 10:00 nell’Ala Storica.</p>
     </div>
 
-   
+   </section>
+ </div>
 </div>
 
-<section class="section" id="aggiungi-app">
-  <h2 class="section-title">Aggiungi l'App alla Home</h2>
 
+<section id="abc" class="section">
+  <h2 class="section-title">Aggiungi l'App alla Home</h2>
   <div class="cards-container">
-    
     <!-- VIDEO iPhone -->
     <div class="card video-card">
       <h3>📱 iPhone / iOS</h3>
@@ -1023,12 +1046,11 @@
       </ul>
       <div class="video-wrapper">
         <iframe 
-          src="https://www.youtube.com/embed/8_NWruTCkaQ" 
-          title="Come aggiungere l'app alla Home iPhone" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen
-           muted>
+          src="https://www.youtube.com/embed/8_NWruTCkaQ"
+          title="Come aggiungere l'app alla Home iPhone"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen muted>
         </iframe>
       </div>
     </div>
@@ -1044,21 +1066,19 @@
       </ul>
       <div class="video-wrapper">
         <iframe 
-          src="https://www.youtube.com/embed/xf5kIjhCaaA" 
-          title="Come aggiungere l'app alla Home Android" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen
-          muted>
+          src="https://www.youtube.com/embed/pcOwsaQMzQU"
+          title="Come aggiungere l'app alla Home Android"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen muted>
         </iframe>
       </div>
     </div>
-    
-     </div>
-</section>
-   
-     </div>
-</section>
+  </div>
+</section> <!-- ✅ Solo UNA chiusura qui! -->
+
+ </div>
+</div>
    
 
 <div id="tornei" class="section">
@@ -1071,7 +1091,6 @@
   <p>Al momento non ci sono tornei attivi. Torna presto per nuove iniziative sportive!</p>
 </div>
 
-    </a>
   </div>
 </div>
 
@@ -1091,29 +1110,29 @@
   
 
   <footer>
-    &copy; 2025 Istituto Manzoni - App creata dagli studenti | <a href="#" onclick="showSection('aggiungi-app')">Aggiungi l'App alla Home</a>
+    &copy; 2025 Istituto Manzoni - App creata dagli studenti | <a href="#" onclick="showSection('abc'); return false;">Aggiungi l'App alla Home</a>
   </footer> 
 <script>
-	
-	document.querySelectorAll('a.card-link').forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
+	document.querySelectorAll('.card-link').forEach(link => {
+  link.addEventListener('click', function (e) {
+    e.preventDefault(); // previene il salto automatico
+    const targetId = this.getAttribute('href').substring(1);
 
-      // Prendi il target dall'href (es: #archivio)
-      const targetId = link.getAttribute('href').substring(1);
-
-      // Rimuovi active da tutte le sezioni
-      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-
-      // Aggiungi active alla sezione target
-      const targetSection = document.getElementById(targetId);
-      if (targetSection) {
-        targetSection.classList.add('active');
-        targetSection.scrollIntoView({ behavior: 'smooth' });
-      }
+    // Nascondi tutte le sezioni
+    document.querySelectorAll('.section').forEach(section => {
+      section.classList.remove('active');
     });
+
+    // Mostra la sezione cliccata
+    const targetSection = document.getElementById(targetId);
+    if (targetSection) {
+      targetSection.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   });
-	
+});
+
+
 	
 	
 	
@@ -1353,6 +1372,8 @@ window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 });
 });
+
+
 
 
 
