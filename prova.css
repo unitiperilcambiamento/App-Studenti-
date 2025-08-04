@@ -1,0 +1,440 @@
+/* Stili generali */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background: #f9fafb;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 240px;
+  height: 100%;
+  background: #e9f0f7;
+  padding: 20px;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+}
+.sidebar img {
+  width: 80px;
+  border-radius: 50%;
+  margin: 0 auto 10px auto;
+  display: block;
+}
+.sidebar h2 {
+  font-size: 18px;
+  margin: 0 0 30px 0;
+  text-align: center;
+  line-height: 1.2;
+}
+.sidebar a {
+  display: block;
+  margin: 10px 0;
+  text-decoration: none;
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+.sidebar a:hover,
+.sidebar a.active {
+  background: #d4e8ff;
+  font-weight: 700;
+  color: #1e40af;
+}
+
+/* Main */
+.main {
+  margin-left: 260px;
+  padding: 30px;
+}
+
+/* Hero */
+.hero {
+  background: linear-gradient(to right, #4f46e5, #9333ea, #059669);
+  color: white;
+  border-radius: 16px;
+  padding: 30px;
+}
+.hero h1 {
+  font-size: 32px;
+  margin: 0;
+}
+.hero p {
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+.hero-buttons {
+  margin-top: 20px;
+}
+.hero-buttons button {
+  margin-right: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+.hero-buttons .proposta {
+  background: white;
+  color: black;
+}
+.hero-buttons .proposta:hover {
+  background: #e5e7eb;
+}
+.hero-buttons .comunicazioni {
+  background: #4f46e5;
+  color: white;
+}
+.hero-buttons .comunicazioni:hover {
+  background: #4338ca;
+}
+
+/* Sezioni */
+.section {
+  display: none;
+}
+.section.active {
+  display: block;
+}
+.section:focus {
+  outline: none;
+}
+.section h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Card */
+.card-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: calc(25% - 20px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  font-weight: 600;
+  color: #1f2937;
+  cursor: pointer;
+  user-select: none;
+  transition: box-shadow 0.2s;
+}
+.card:hover,
+.card:focus {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  outline: none;
+}
+.card .title {
+  font-weight: 700;
+  font-size: 16px;
+}
+.card .desc {
+  font-size: 14px;
+  margin-top: 5px;
+  color: #374151;
+  font-weight: 400;
+}
+
+/* Bottoni */
+.btn-accedi {
+  margin-top: 15px;
+  padding: 8px;
+  width: 100%;
+  border: none;
+  background: #111827;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+.btn-accedi:hover {
+  background: #1f2937;
+}
+
+/* Aggiornamenti */
+.updates {
+  margin-top: 30px;
+}
+.update {
+  background: white;
+  padding: 24px;
+  margin-bottom: 16px;
+  border-radius: 16px;
+  border-left: 4px solid transparent;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.07);
+  font-size: 16px;
+  color: #111827;
+  font-weight: 500;
+}
+.update.urgente {
+  border-left: 4px solid #f97316;
+  border: 1px solid #f97316;
+  color: #b45309;
+}
+.update .titolo {
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+.badge {
+  background: #e5e7eb;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  margin-left: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #374151;
+}
+.badge.urgente {
+  background: #ef4444;
+  color: white;
+}
+
+/* Footer fisso */
+.anno-scolastico {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: #10b981;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(16,185,129,0.6);
+  user-select: none;
+}
+
+asp ti mando l'altro style mantieni il tema /* Stili generali */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background: #f9fafb;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 240px;
+  height: 100%;
+  background: #e9f0f7;
+  padding: 20px;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+}
+.sidebar img {
+  width: 80px;
+  border-radius: 50%;
+  margin: 0 auto 10px auto;
+  display: block;
+}
+.sidebar h2 {
+  font-size: 18px;
+  margin: 0 0 30px 0;
+  text-align: center;
+  line-height: 1.2;
+}
+.sidebar a {
+  display: block;
+  margin: 10px 0;
+  text-decoration: none;
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+.sidebar a:hover,
+.sidebar a.active {
+  background: #d4e8ff;
+  font-weight: 700;
+  color: #1e40af;
+}
+
+/* Main */
+.main {
+  margin-left: 260px;
+  padding: 30px;
+}
+
+/* Hero */
+.hero {
+  background: linear-gradient(to right, #4f46e5, #9333ea, #059669);
+  color: white;
+  border-radius: 16px;
+  padding: 30px;
+}
+.hero h1 {
+  font-size: 32px;
+  margin: 0;
+}
+.hero p {
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+.hero-buttons {
+  margin-top: 20px;
+}
+.hero-buttons button {
+  margin-right: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+.hero-buttons .proposta {
+  background: white;
+  color: black;
+}
+.hero-buttons .proposta:hover {
+  background: #e5e7eb;
+}
+.hero-buttons .comunicazioni {
+  background: #4f46e5;
+  color: white;
+}
+.hero-buttons .comunicazioni:hover {
+  background: #4338ca;
+}
+
+/* Sezioni */
+.section {
+  display: none;
+}
+.section.active {
+  display: block;
+}
+.section:focus {
+  outline: none;
+}
+.section h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Card */
+.card-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: calc(25% - 20px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  font-weight: 600;
+  color: #1f2937;
+  cursor: pointer;
+  user-select: none;
+  transition: box-shadow 0.2s;
+}
+.card:hover,
+.card:focus {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  outline: none;
+}
+.card .title {
+  font-weight: 700;
+  font-size: 16px;
+}
+.card .desc {
+  font-size: 14px;
+  margin-top: 5px;
+  color: #374151;
+  font-weight: 400;
+}
+
+/* Bottoni */
+.btn-accedi {
+  margin-top: 15px;
+  padding: 8px;
+  width: 100%;
+  border: none;
+  background: #111827;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+.btn-accedi:hover {
+  background: #1f2937;
+}
+
+/* Aggiornamenti */
+.updates {
+  margin-top: 30px;
+}
+.update {
+  background: white;
+  padding: 24px;
+  margin-bottom: 16px;
+  border-radius: 16px;
+  border-left: 4px solid transparent;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.07);
+  font-size: 16px;
+  color: #111827;
+  font-weight: 500;
+}
+.update.urgente {
+  border-left: 4px solid #f97316;
+  border: 1px solid #f97316;
+  color: #b45309;
+}
+.update .titolo {
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+.badge {
+  background: #e5e7eb;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  margin-left: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #374151;
+}
+.badge.urgente {
+  background: #ef4444;
+  color: white;
+}
+
+/* Footer fisso */
+.anno-scolastico {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: #10b981;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(16,185,129,0.6);
+  user-select: none;+
