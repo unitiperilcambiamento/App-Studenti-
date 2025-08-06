@@ -1,0 +1,21 @@
+{
+  "name": "App Studenti - Istituto Manzoni",
+  "short_name": "App Studenti",
+  "description": "App per studenti dell'Istituto Manzoni.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3A81CC",
+  "icons": [
+    {
+      "src": "logo123.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo123.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
