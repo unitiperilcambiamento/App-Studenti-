@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Comunicazione 1 - Istituto Manzoni</title>
+  <style>
+	  header {
+  background-color: var(--main-color);
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  position: relative;
+}
+
+header .logo {
+  width: 120px;     /* regola la dimensione a piacere */
+  height: auto;
+  display: block;
+  margin: 0 auto 0.5rem auto; /* centrata, con margine sotto */
+}
+    :root {
+      --main-color: #2e86de;
+      --secondary-color: #f4f4f4;
+      --text-color: #333;
+      --font: 'Segoe UI', sans-serif;
+    }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+    }
+    header {
+      background-color: var(--main-color);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    nav {
+      background-color: #1e5fad;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 0.75rem 0;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #cce0ff;
+    }
+    main {
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    footer {
+      background-color: #ddd;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      margin-top: 2rem;
+    }
+    a.button {
+      display: inline-block;
+      background-color: var(--main-color);
+      color: white;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 1rem;
+      transition: background-color 0.3s;
+    }
+    a.button:hover {
+      background-color: #1b4f9c;
+    }
+  </style>
+</head>
+<body>
+  <header>
+	  <img src="manzoni-logo.png" alt="Istituto Manzoni Suzzara" class="logo" />
+    <h1>Comunicazione 1</h1>
+    <p>Istituto Manzoni</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="comunicazione1.html" class="active"></a>
+    <a href="comunicazione2.html"></a>
+  </nav>
+
+  <main>
+    <h2>Avviso Importante per gli studenti</h2>
+    <p>
+      Cari studenti,<br>
+      Vi informiamo che il prossimo venerdì 7 giugno ci sarà un'assemblea d'istituto dalle 10:00 alle 12:00 nell'aula magna.  
+      La partecipazione è obbligatoria.
+    </p>
+    <p>
+      Per maggiori dettagli, scarica il documento ufficiale sul registro elletronico:
+    </p>
+   
+  </main>
+
+  <footer>
+    &copy; 2025 Istituto Manzoni - App creata dagli studenti
+  </footer>
+</body>
+</html>
+
