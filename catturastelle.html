@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cattura le Stelle</title>
+<style>
+  body {
+    margin:0; background:#121212; color:#fff; font-family: Arial, sans-serif;
+    display: flex; justify-content: center; align-items: center; height: 100vh;
+  }
+  .back-button {
+    position: fixed; top:10px; left:10px;
+    background:#ff5252; color:#fff; padding:8px 14px; border-radius:6px;
+    font-size:14px; text-decoration:none; z-index:1000;
+  }
+  .game-container {
+    position: relative;
+    background: #1e1e1e;
+    border: 3px solid #333;
+    border-radius: 12px;
+    overflow: hidden;
+    width: 90vmin;
+    height: 90vmin;
+    max-width: 500px;
+    max-height: 500px;
+  }
+  canvas {
+    width: 100%; height: 100%; display: block;
+  }
+  .overlay {
+    position: absolute; top:0; left:0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center; text-align: center;
+  }
+  button {
+    padding: 12px 24px; font-size: 16px; font-weight: bold;
+    background: #4caf50; color: white; border:none; border-radius:6px;
+    margin-top: 15px; cursor: pointer;
+  }
+  h1 { margin-bottom: 10px; }
+</style>
+</head>
+<body>
+  <a href="app.html" class="back-button">⬅ Torna all'App</a>
+  <div class="game-container">
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="startScreen" class="overlay">
+      <h1>Cattura le Stelle</h1>
+      <p>Muovi il dito per catturare solo le stelle colorate!</p>
+      <button onclick="startGame()">Start</button>
+      <a href="app.html#minigames" style="
+        margin-top: 10px;
+        display: inline-block;
+        background-color: #333;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+    ">⬅️ Torna all'App</a>
+    </div>
+
+    <div id="gameOverScreen" class="overlay" style="display:none;">
+      <h1>Game Over</h1>
+      <p id="scoreText"></p>
+      <button onclick="startGame()">Rigioca</button>
+      <a href="app.html#minigames" style="
+        margin-top: 10px;
+        display: inline-block;
+        background-color: #333;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+    ">⬅️ Torna all'App</a>
+    </div>
+  </div>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+const startScreen = document.getElementById("startScreen");
+const gameOverScreen = document.getElementById("gameOverScreen");
+const scoreText = document.getElementById("scoreText");
+
+let player, stars, score, gameRunning, lastSpawn;
+let touchX = null;
+
+function resizeCanvas() {
+  canvas.width = canvas.parentElement.clientWidth;
+  canvas.height = canvas.parentElement.clientHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+function startGame() {
+  player = {
+    x: canvas.width / 2 - 50,
+    y: canvas.height - 40,
+    width: 100,
+    height: 20,
+    color: "#2196f3",
+  };
+  stars = [];
+  score = 0;
+  gameRunning = true;
+  lastSpawn = 0;
+  startScreen.style.display = "none";
+  gameOverScreen.style.display = "none";
+  requestAnimationFrame(gameLoop);
+}
+
+function endGame() {
+  gameRunning = false;
+  scoreText.textContent = `Punteggio: ${score}`;
+  gameOverScreen.style.display = "flex";
+}
+
+function spawnStar() {
+  const size = 20;
+  const isGood = Math.random() > 0.3; // 70% stelle buone
+  stars.push({
+    x: Math.random() * (canvas.width - size),
+    y: -size,
+    width: size,
+    height: size,
+    color: isGood ? "#ffeb3b" : "#000", // gialla o nera
+    speed: 2 + Math.random() * 2,
+    good: isGood,
+  });
+}
+
+function update() {
+  stars.forEach(star => star.y += star.speed);
+
+  stars = stars.filter(star => star.y < canvas.height);
+
+  for (let star of stars) {
+    if (
+      player.x < star.x + star.width &&
+      player.x + player.width > star.x &&
+      player.y < star.y + star.height &&
+      player.y + player.height > star.y
+    ) {
+      if(star.good) score++;
+      else {
+        endGame();
+        return;
+      }
+      stars.splice(stars.indexOf(star),1);
+    }
+  }
+}
+
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  ctx.fillStyle = player.color;
+  ctx.fillRect(player.x, player.y, player.width, player.height);
+
+  stars.forEach(star => {
+    ctx.fillStyle = star.color;
+    ctx.beginPath();
+    ctx.moveTo(star.x + star.width/2, star.y);
+    for(let i=0; i<5; i++){
+      ctx.lineTo(star.x + star.width/2 + star.width/2 * Math.cos((18 + i*72)*Math.PI/180),
+                 star.y + star.height/2 + star.height/2 * Math.sin((18 + i*72)*Math.PI/180));
+      ctx.lineTo(star.x + star.width/2 + star.width/4 * Math.cos((54 + i*72)*Math.PI/180),
+                 star.y + star.height/2 + star.height/4 * Math.sin((54 + i*72)*Math.PI/180));
+    }
+    ctx.closePath();
+    ctx.fill();
+  });
+
+  ctx.fillStyle = "white";
+  ctx.font = "18px Arial";
+  ctx.fillText("Punteggio: " + score, 10, 25);
+}
+
+function gameLoop(timestamp=0) {
+  if(!gameRunning) return;
+
+  if(timestamp - lastSpawn > 800){
+    spawnStar();
+    lastSpawn = timestamp;
+  }
+
+  update();
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+canvas.addEventListener("touchstart", e => {
+  touchX = e.touches[0].clientX;
+});
+canvas.addEventListener("touchmove", e => {
+  const newTouchX = e.touches[0].clientX;
+  const deltaX = newTouchX - touchX;
+  player.x += deltaX * 0.7;
+  touchX = newTouchX;
+
+  if(player.x < 0) player.x = 0;
+  if(player.x + player.width > canvas.width) player.x = canvas.width - player.width;
+});
+</script>
+</body>
+</html>

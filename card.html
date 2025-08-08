@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Memory Touch</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+  body {
+    margin:0;
+    background:#121212;
+    color:#E0E0E0;
+    font-family: 'Inter', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+    user-select: none;
+  }
+  a#backButton {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background: #333;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    z-index: 1000;
+    box-shadow: 0 3px 7px rgba(0,0,0,0.7);
+  }
+  #gameContainer {
+    margin-top: 70px;
+    width: 320px;
+    max-width: 90vw;
+    background: #1E1E1E;
+    border-radius: 24px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.8);
+    padding: 20px 25px 30px;
+  }
+  h1 {
+    margin: 0 0 20px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: #FFD700;
+    text-shadow: 0 0 10px #FFD700aa;
+  }
+  #startScreen, #winOverlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  button {
+    margin-top: 20px;
+    padding: 14px 28px;
+    font-size: 1.2rem;
+    background: #4CAF50;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 5px 15px #2E7D32aa;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #66BB6A;
+  }
+  #gameBoard {
+    display: grid;
+    grid-template-columns: repeat(4, 65px);
+    grid-gap: 16px;
+    justify-content: center;
+    margin-top: 15px;
+  }
+  .card {
+    width: 65px;
+    height: 65px;
+    background: #444;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    color: #222;
+    box-shadow: inset 0 0 8px #0008;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .card.flipped, .card.matched {
+    background: #FFD700;
+    color: #222;
+    cursor: default;
+    box-shadow: 0 0 12px 3px #FFD700aa;
+  }
+  #winOverlay {
+    background: #2a2a2a;
+    border-radius: 24px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.9);
+    padding: 30px 20px;
+    margin-top: 25px;
+    color: #FFD700;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  a.back-link {
+    margin-top: 20px;
+    display: inline-block;
+    background-color: #333;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.7);
+    transition: background-color 0.3s ease;
+  }
+  a.back-link:hover {
+    background-color: #555;
+  }
+</style>
+</head>
+<body>
+
+<a id="backButton" href="app.html#minigames">⬅️ Torna all'App</a>
+
+<div id="gameContainer">
+
+  <h1 id="gameTitle" style="display:none;">Memory Touch</h1>
+
+  <div id="startScreen">
+    <button id="startButton">START</button>
+    <a href="app.html#minigames" class="back-link">⬅️ Torna all'App</a>
+  </div>
+
+  <div id="gameBoard"></div>
+
+  <div id="winOverlay" style="display:none;">
+    <div>🎉 Hai trovato tutte le coppie! 🎉</div>
+    <button id="replayButton">Rigioca</button>
+    <a href="app.html#minigames" class="back-link">⬅️ Torna all'App</a>
+  </div>
+
+</div>
+
+<script>
+const symbols = ['🍎','🍌','🍇','🍓','🍍','🥝','🍒','🍉']; // 8 coppie
+let cards = [];
+let flipped = [];
+let matchedCount = 0;
+const gameBoard = document.getElementById('gameBoard');
+const winOverlay = document.getElementById('winOverlay');
+const startScreen = document.getElementById('startScreen');
+const gameTitle = document.getElementById('gameTitle');
+const startButton = document.getElementById('startButton');
+const replayButton = document.getElementById('replayButton');
+
+function shuffle(array) {
+  for(let i = array.length -1; i > 0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function createCards(){
+  cards = [];
+  symbols.forEach(symbol => {
+    cards.push({symbol, id: Math.random()});
+    cards.push({symbol, id: Math.random()});
+  });
+  cards = shuffle(cards);
+}
+
+function createCardElement(cardObj, index){
+  const card = document.createElement('div');
+  card.classList.add('card');
+  card.dataset.index = index;
+  card.textContent = ''; // carta coperta
+  card.addEventListener('click', onCardClick);
+  return card;
+}
+
+function startGame(){
+  matchedCount = 0;
+  flipped = [];
+  winOverlay.style.display = 'none';
+  startScreen.style.display = 'none';
+  gameTitle.style.display = 'block';
+  createCards();
+  gameBoard.innerHTML = '';
+  cards.forEach((cardObj, index) => {
+    gameBoard.appendChild(createCardElement(cardObj, index));
+  });
+}
+
+function onCardClick(e){
+  const cardDiv = e.currentTarget;
+  const index = cardDiv.dataset.index;
+  if(flipped.length === 2) return;
+  if(cardDiv.classList.contains('flipped') || cardDiv.classList.contains('matched')) return;
+
+  cardDiv.classList.add('flipped');
+  cardDiv.textContent = cards[index].symbol;
+  flipped.push({index, cardDiv});
+
+  if(flipped.length === 2){
+    if(cards[flipped[0].index].symbol === cards[flipped[1].index].symbol){
+      // Match!
+      flipped[0].cardDiv.classList.add('matched');
+      flipped[1].cardDiv.classList.add('matched');
+      matchedCount += 2;
+      flipped = [];
+      if(matchedCount === cards.length){
+        setTimeout(() => {
+          winOverlay.style.display = 'flex';
+        }, 500);
+      }
+    } else {
+      // No match, gira indietro
+      setTimeout(() => {
+        flipped[0].cardDiv.classList.remove('flipped');
+        flipped[0].cardDiv.textContent = '';
+        flipped[1].cardDiv.classList.remove('flipped');
+        flipped[1].cardDiv.textContent = '';
+        flipped = [];
+      }, 1000);
+    }
+  }
+}
+
+startButton.addEventListener('click', startGame);
+replayButton.addEventListener('click', () => {
+  winOverlay.style.display = 'none';
+  startGame();
+});
+</script>
+
+</body>
+</html>
+
