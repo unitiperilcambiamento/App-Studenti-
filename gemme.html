@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acchiappa le Gemme</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #E0E0E0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            overflow: hidden;
+            text-align: center;
+        }
+        .game-container {
+            position: relative;
+            width: 90vmin;
+            height: 90vmin;
+            max-width: 600px;
+            max-height: 600px;
+            background-color: #1E1E1E;
+            border: 4px solid #333;
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .game-ui {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(30, 30, 30, 0.9);
+            padding: 20px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+        p {
+            font-size: 1.2rem;
+            margin: 5px 0;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #1E1E1E;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #66BB6A;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        #scoreDisplay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FFEB3B;
+            text-shadow: 1px 1px 2px #000;
+            z-index: 10;
+        }
+        
+        
+        
+        
+        #backButton {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: #333;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    z-index: 9999;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+#backButton:hover {
+    background-color: #555;
+    transform: translateY(-2px);
+}
+
+    </style>
+</head>
+<body>
+	<a href="app.html#minigames" id="backButton">⬅️ Torna all'App</a>
+
+    <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <div id="startScreen" class="game-ui">
+            <h1>Acchiappa le Gemme</h1>
+            <p>Muovi il mouse per controllare la piattaforma.</p>
+            <p>Cattura le gemme che cadono per fare punti.</p>
+            <button id="startButton">Inizia il gioco</button>
+             <a href="app.html#minigames" style="
+        margin-top: 10px;
+        display: inline-block;
+        background-color: #333;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+    ">⬅️ Torna all'App</a>
+        </div>
+        <div id="gameOverScreen" class="game-ui" style="display: none;">
+            <h1>Game Over</h1>
+            <p id="finalScoreText"></p>
+            <button id="restartButton">Rigioca</button>
+            <a href="app.html#minigames" style="
+        margin-top: 10px;
+        display: inline-block;
+        background-color: #333;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+    ">⬅️ Torna all'App</a>
+        </div>
+        <span id="scoreDisplay">Punteggio: 0</span>
+    </div>
+
+    <script>
+        // Otteniamo gli elementi della pagina HTML
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startScreen = document.getElementById('startScreen');
+        const startButton = document.getElementById('startButton');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const restartButton = document.getElementById('restartButton');
+        const finalScoreText = document.getElementById('finalScoreText');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+
+        // Impostazioni del gioco
+        let isPlaying = false;
+        let score = 0;
+        let player = {
+            x: 0,
+            y: 0,
+            width: 100,
+            height: 20,
+            color: '#FFD700' // Oro
+        };
+        let gems = [];
+        let gemSpeed = 2;
+        let gemSpawnInterval = 1000; // 1 secondo
+        let lastGemSpawnTime = 0;
+
+        // Imposta le dimensioni del canvas
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            player.y = canvas.height - player.height - 20;
+            player.x = (canvas.width - player.width) / 2;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Funzione per disegnare il giocatore
+        function drawPlayer() {
+            ctx.fillStyle = player.color;
+            ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.roundRect(player.x, player.y, player.width, player.height, 5);
+            ctx.fill();
+            ctx.shadowBlur = 0; // Resetta l'ombra per non influenzare gli altri elementi
+        }
+
+        // Funzione per creare una gemma
+        function createGem() {
+            const size = 15 + Math.random() * 10;
+            const colors = ['#00BFFF', '#FF4500', '#DA70D6', '#ADFF2F']; // Vari colori
+            gems.push({
+                x: Math.random() * (canvas.width - size),
+                y: -size,
+                size: size,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                isHit: false
+            });
+        }
+
+        // Funzione per disegnare le gemme
+        function drawGems() {
+            gems.forEach(gem => {
+                ctx.fillStyle = gem.color;
+                ctx.shadowColor = 'rgba(255, 255, 255, 0.7)';
+                ctx.shadowBlur = 8;
+                ctx.beginPath();
+                ctx.arc(gem.x + gem.size / 2, gem.y + gem.size / 2, gem.size / 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+        }
+
+        // Funzione per aggiornare la posizione delle gemme
+        function updateGems() {
+            gems.forEach(gem => {
+                gem.y += gemSpeed;
+            });
+        }
+
+        // Funzione per controllare le collisioni e aumentare la difficoltà
+        function checkCollisions() {
+            gems.forEach(gem => {
+                if (
+                    gem.y + gem.size > player.y &&
+                    gem.x + gem.size > player.x &&
+                    gem.x < player.x + player.width &&
+                    !gem.isHit
+                ) {
+                    gem.isHit = true;
+                    score++;
+                    scoreDisplay.textContent = `Punteggio: ${score}`;
+                    
+                    // Aumenta la velocità e la frequenza di spawn ogni volta che si acchiappa una gemma
+                    gemSpeed += 0.05; // Aumento della velocità più consistente
+                    gemSpawnInterval = Math.max(200, gemSpawnInterval - 5); // Riduce l'intervallo di spawn, con un limite minimo
+                }
+            });
+        }
+
+        // Funzione per pulire il canvas
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Funzione per il loop di gioco
+        function gameLoop(currentTime) {
+            if (!isPlaying) return;
+
+            // Logica per far spawnare nuove gemme
+            if (currentTime - lastGemSpawnTime > gemSpawnInterval) {
+                createGem();
+                lastGemSpawnTime = currentTime;
+            }
+
+            // Controlla se la partita è finita (se ci sono gemme fuori dallo schermo) PRIMA di rimuoverle
+            if (gems.some(gem => gem.y > canvas.height)) {
+                endGame();
+                return; // Esce dalla funzione per non eseguire il resto del loop
+            }
+
+            // Aggiorna e disegna
+            clearCanvas();
+            updateGems();
+            checkCollisions();
+            drawPlayer();
+            drawGems();
+
+            // Rimuovi le gemme che sono state colpite
+            gems = gems.filter(gem => !gem.isHit);
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Avvia il gioco
+        function startGame() {
+            isPlaying = true;
+            score = 0;
+            scoreDisplay.textContent = `Punteggio: ${score}`;
+            gems = [];
+            gemSpeed = 2;
+            gemSpawnInterval = 1000;
+            startScreen.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Termina il gioco
+        function endGame() {
+            isPlaying = false;
+            finalScoreText.textContent = `Il tuo punteggio finale è: ${score}`;
+            gameOverScreen.style.display = 'flex';
+        }
+
+        // Controlla il movimento del mouse
+        canvas.addEventListener('mousemove', (e) => {
+            if (isPlaying) {
+                // Calcola la posizione del cursore relativa al canvas
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const mouseX = (e.clientX - rect.left) * scaleX;
+                player.x = mouseX - player.width / 2;
+            }
+        });
+
+        // Eventi per i pulsanti
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', startGame);
+
+    </script>
+</body>
+</html>

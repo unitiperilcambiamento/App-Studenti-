@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#22c55e" />
+
+  <title>App Studenti - Istituto Manzoni</title>
+
+  <link rel="manifest" href="/App-Studenti-/manifest.json" />
+  <link rel="icon" href="/App-Studenti-/logo123.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/App-Studenti-/logo123.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Variabili tema chiaro/scuro */
+    :root {
+      /* Tema Chiaro */
+      --main-color: #22c55e;
+      --secondary-color: #f0f2f5;
+      --text-color: #2c3e50;
+      --card-bg: #ffffff;
+      --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      --border-color: #e0e0e0;
+
+      /* Barra di navigazione in basso */
+      --nav-bg: #ffffff;
+      --nav-border: #ddd;
+      --nav-color: #7f8c8d;
+      --nav-active-color: #22c55e;
+      --nav-active-bg: #e6f9ed;
+      --nav-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+
+      --font-family: 'Roboto', sans-serif;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* Tema Scuro */
+        --main-color: #15803d;
+        --secondary-color: #1a202c;
+        --text-color: #e2e8f0;
+        --card-bg: #2d3748;
+        --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        --border-color: #4a5568;
+        
+        /* Barra di navigazione in basso */
+        --nav-bg: #2d3748;
+        --nav-border: #4a5568;
+        --nav-color: #a0aec0;
+        --nav-active-color: #22c55e;
+        --nav-active-bg: #4a5568;
+        --nav-shadow: 0 -2px 8px rgba(0,0,0,0.3);
+      }
+    }
+
+    /* Stili globali */
+    body {
+      margin: 0;
+      font-family: var(--font-family);
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+      padding-bottom: 80px; /* Spazio per la nav bar in basso */
+      transition: background-color 0.3s ease;
+    }
+
+    a {
+      color: var(--main-color);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: var(--text-color);
+    }
+    
+    /* Intestazione */
+    header {
+      background-color: var(--main-color);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      transition: background-color 0.3s ease;
+    }
+    
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo {
+      height: 50px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    /* Contenuto principale */
+    main {
+      padding: 2rem;
+      max-width: 1000px;
+      margin: auto;
+    }
+    
+    /* Sezioni */
+    .section {
+      display: none;
+      padding: 20px 0;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      color: var(--text-color);
+      text-align: center;
+    }
+
+    /* Card uniformi e centrate (stile base per tutte le card) */
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    
+    .card-link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      padding: 20px;
+      width: 260px; /* Larghezza fissa */
+      min-height: 150px; /* Altezza minima per uniformità */
+      border: 2px solid var(--border-color);
+      border-radius: 20px; /* Forma originale */
+      box-shadow: var(--card-shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .card h3 {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+      color: var(--main-color);
+    }
+
+    .card p {
+      font-size: 1rem;
+      color: var(--text-color);
+      margin: 0;
+    }
+
+    /* Elementi specifici */
+    .evento-card {
+      background: var(--main-color);
+      color: white;
+      padding: 14px 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(34, 197, 94, 0.5);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      cursor: pointer;
+    }
+    
+    .evento-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(34, 197, 94, 0.8);
+    }
+    
+    .evento-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    
+    .promessa-card {
+      width: 300px;
+      border-left: 6px solid var(--main-color);
+      background-color: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center; /* Centra il testo */
+    }
+    
+    .video-card {
+      width: 340px;
+      padding: 20px;
+      border-radius: 12px;
+      background-color: var(--card-bg);
+      box-shadow: var(--card-shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center; /* Centra il testo */
+    }
+
+    /* Barra di navigazione in basso - Nuovi stili */
+    #bottomNav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--nav-bg);
+      border-top: 1px solid var(--nav-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 8px 0;
+      box-shadow: var(--nav-shadow);
+      z-index: 1000;
+      transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #bottomNav .nav-btn {
+      background: none;
+      border: none;
+      outline: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--nav-color);
+      font-family: var(--font-family);
+      font-size: 12px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      width: 60px;
+      padding: 8px 0;
+      text-align: center;
+      position: relative;
+      border-radius: 12px;
+      background-color: transparent;
+    }
+    
+    #bottomNav .nav-btn:hover {
+      color: var(--nav-active-color);
+    }
+    
+    #bottomNav .nav-icon-container {
+      font-size: 24px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    #bottomNav .nav-label {
+      user-select: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    #bottomNav .nav-btn.active {
+      color: var(--nav-active-color);
+      background-color: var(--nav-active-bg);
+    }
+    
+    @media (max-width: 600px) {
+        #bottomNav .nav-btn {
+            font-size: 10px;
+            width: 50px;
+        }
+    }
+    
+    .voto-card {
+      min-width: 220px;
+      max-width: 260px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px 18px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      cursor: default;
+      margin: auto;
+      text-align: center; /* Centra il testo */
+    }
+    
+    .voto-card h3, .voto-card p {
+      color: var(--text-color);
+    }
+    
+    .voto-card:hover {
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+      transform: translateY(-4px);
+    }
+    
+    .quorum-non-raggiunto .voto-intestazione .icon-voto {
+      color: #dc3545;
+      border-color: #dc3545;
+      background-color: #f8d7da;
+    }
+
+    /* Stili per la sezione segnalazioni */
+    #segnalazioni {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    #segnalazioni form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    #segnalazioni form input,
+    #segnalazioni form textarea {
+      padding: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      font-size: 1rem;
+    }
+
+    #segnalazioni form button {
+      padding: 0.75rem;
+      font-size: 1.1rem;
+      border-radius: 8px;
+    }
+    
+    /* Nuovi stili per la sezione impostazioni */
+    #impostazioni .settings-group {
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+
+    #impostazioni h3 {
+      font-size: 1.5rem;
+      color: var(--text-color);
+      margin-bottom: 1rem;
+    }
+
+    #impostazioni label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .color-picker-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .toggle-switch-container {
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .toggle-switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--main-color);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo-container">
+      <img src="manzoni-logo.png" alt="Logo Istituto Manzoni" class="logo" />
+      <img src="lista.png" alt="Logo Lista Studenti" class="logo" />
+    </div>
+  </header>
+
+  <main>
+    <section class="section active" id="home">
+      <h2 class="section-title">Benvenuto!</h2>
+      <p style="text-align: center; margin-bottom: 2rem;">Questa è l'app ufficiale della lista Insieme per il Cambiamento dell'Istituto Manzoni. Naviga tra le sezioni per scoprire tutte le funzionalità!</p>
+      <div class="cards-container">
+        <a href="#comunicazioni" class="card-link" onclick="showSection('comunicazioni'); return false;">
+          <div class="card">
+            <h3>📢 Novità</h3>
+            <p>Leggi le ultime notizie scolastiche</p>
+          </div>
+        </a>
+        <a href="#calendario" class="card-link" onclick="showSection('calendario'); return false;">
+          <div class="card">
+            <h3>📅 Calendario</h3>
+            <p>Scopri le date importanti dell'anno</p>
+          </div>
+        </a>
+        <a href="#proposte-voti" class="card-link" onclick="showSection('proposte-voti'); return false;">
+          <div class="card">
+            <h3>🗳️ Vota Ora</h3>
+            <p>Partecipa alle votazioni in corso</p>
+          </div>
+        </a>
+      </div>
+    </section>
+    
+    <section class="section" id="minigames">
+      <h2 class="section-title">🎮 Minigames</h2>
+      <p style="text-align: center;">Divertiti con i giochi disponibili nell'app!</p>
+      <div class="cards-container">
+        <a href="Gemme.html" class="card-link">
+          <div class="card">
+            <h3>💎 Acchiappa le Gemme</h3>
+            <p>Raccogli più gemme che puoi!</p>
+          </div>
+        </a>
+        
+        <a href="blocchi.html" class="card-link">
+          <div class="card">
+            <h3>🟥 Evita i Blocchi</h3>
+            <p>Schiva più blocchi che puoi!</p>
+          </div>
+        </a>
+        
+         <a href="catturastelle.html" class="card-link">
+          <div class="card">
+            <h3>⭐ Cattura le Stelle</h3>
+            <p>Cattura piu stelle che puoi!</p>
+          </div>
+        </a>
+        
+         <a href="card.html" class="card-link">
+          <div class="card">
+            <h3>🍌 Memory Touch</h3>
+            <p>Allena la memoria con tocchi!</p>
+          </div>
+        </a>
+        
+      </div>
+    </section>
+    
+
+    <section class="section" id="comunicazioni">
+      <h2 class="section-title">📢 Comunicazioni</h2>
+      <div class="cards-container">
+        <div class="card">
+          <h3>📋 Sondaggio Studenti</h3>
+          <p>Dicci la tua su problemi, idee e cosa migliorare a scuola. <a href="https://forms.gle/9oyd7YpvjkkJU4MB8" target="_blank">Partecipa al sondaggio</a></p>
+        </div>
+        <div class="card">
+          <h3>Primo giorno di scuola</h3>
+          <p>Le classi 1ª e 2ª entreranno <strong>alle ore 8:00</strong> nell’Ala Rossa; tutte le altre classi alle ore 10:00 nell’Ala Storica.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="calendario">
+      <h2 class="section-title">📅 Calendario Eventi</h2>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeXAMPLELINK/viewform" target="_blank" style="
+          display: block;
+          text-align: center;
+          width: 100%;
+          max-width: 300px;
+          padding: 12px 0;
+          background-color: var(--main-color);
+          color: white;
+          border: none;
+          border-radius: 10px;
+          font-weight: 700;
+          font-size: 16px;
+          cursor: pointer;
+          margin-bottom: 24px;
+          text-decoration: none;
+        ">Proponi Evento</a>
+        
+        <div id="eventi-lista" style="max-height: 450px; overflow-y: auto; width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 12px;">
+          <div class="evento-card">
+            <div class="evento-date">📅 12 Settembre 2025</div>
+            <div class="evento-title">Inizio della scuola</div>
+            <div class="evento-desc">Ripresa delle attività didattiche.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="proposte-voti">
+      <h2 class="section-title">🗳️ Proposte e Voti</h2>
+      <div class="cards-container">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdr3p4i3nQnPQv3jUr3S4HrR0ZPjb8mJpzcrlzJxA6Vm-c7wA/viewform?usp=header" target="_blank" class="card-link">
+          <div class="card">
+            <h3>Proposte</h3>
+            <p>Invia la tua idea per migliorare la scuola! Compila il modulo con la tua proposta.</p>
+          </div>
+        </a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeGN-jVt7k1feK4dduDX5F86ICaze-Qhua8qUu2DvieZIYZbw/viewform?usp=header" target="_blank" class="card-link">
+          <div class="card">
+            <h3>Votazioni in Corso</h3>
+            <p>Vota tra le proposte della settimana e fai sentire la tua voce!</p>
+          </div>
+        </a>
+        <a href="#archivio" class="card-link" onclick="showSection('archivio'); return false;">
+          <div class="card">
+            <h3>Archivio Votazioni</h3>
+            <p>Consulta lo storico di tutte le votazioni passate e i risultati ottenuti.</p>
+          </div>
+        </a>
+      </div>
+    </section>
+    
+    <div id="archivio" class="section">
+  <h2>Archivio Votazioni</h2>
+   <div class="card">
+    <h3>⚠️ Nessuna votazione disponibile</h3>
+  
+  <p>Non sono ancora state effettuate votazioni</p>
+
+</div>
+</div>
+</div>
+
+    <section class="section" id="altro">
+      <h2 class="section-title">☰ Altro</h2>
+      <div class="cards-container">
+        <a href="#impostazioni" class="card-link" onclick="showSection('impostazioni'); return false;">
+          <div class="card">
+            <h3>⚙️ Impostazioni</h3>
+            <p>Personalizza l'app</p>
+             </div>
+                </a>
+                <a href="#minigames" class="card-link" onclick="showSection('minigames'); return false;">
+          <div class="card">
+            <h3>🎮 Minigames</h3>
+            <p>Gioca ai minigiochi disponibili</p>
+          </div>
+        </a>
+                
+                
+        <a href="#tornei" class="card-link" onclick="showSection('tornei'); return false;">
+          <div class="card">
+            <h3>🏆 Tornei</h3>
+            <p>Iscriviti o segui i tornei scolastici</p>
+          </div>
+        </a>
+        <a href="#promesse" class="card-link" onclick="showSection('promesse'); return false;">
+          <div class="card">
+            <h3>🎯 Obiettivi</h3>
+            <p>Consulta le promesse della nostra lista</p>
+          </div>
+        </a>
+        <a href="#documenti" class="card-link" onclick="showSection('documenti'); return false;">
+          <div class="card">
+            <h3>📄 Documenti</h3>
+            <p>Leggi i documenti ufficiali</p>
+          </div>
+        </a>
+        <a href="#segnalazioni" class="card-link" onclick="showSection('segnalazioni'); return false;">
+          <div class="card">
+            <h3>✉️ Segnalazioni</h3>
+            <p>Invia un feedback o una segnalazione</p>
+          </div>
+        </a>
+      </div>
+    </section>
+    
+    <section class="section" id="tornei">
+      <h2 class="section-title">🏆 Tornei</h2>
+      <p style="text-align: center;">In questa sezione troverai i tornei scolastici organizzati dagli studenti o dalla scuola. Partecipa anche tu!</p>
+      <div class="cards-container">
+        <div class="card">
+          <h3>Nessun torneo disponibile</h3>
+          <p>Al momento non ci sono tornei attivi. Torna presto per nuove iniziative!</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="promesse">
+      <h2 class="section-title">🎯 I nostri obiettivi</h2>
+      <div class="cards-container">
+        <div class="card">
+          <h3>Aumentare la ricreazione da 10 a 15 minuti</h3>
+          <p>Vogliamo portare 5 minuti in più di ricreazione per favorire il benessere e migliorare la concentrazione degli studenti.</p>
+        </div>
+        <div class="card">
+          <h3>Fermate del bus più confortevoli</h3>
+          <p>Vogliamo rendere le fermate del bus più confortevoli aggiungendo panchine per l’attesa.</p>
+        </div>
+        <div class="card">
+          <h3>Bagni scolastici più puliti e funzionali</h3>
+          <p>Vogliamo rendere i bagni scolastici più puliti e meglio attrezzati per garantire igiene e comfort a tutti.</p>
+        </div>
+        <div class="card">
+          <h3>Lezioni più coinvolgenti</h3>
+          <p>Vogliamo rendere le lezioni più coinvolgenti utilizzando strumenti digitali che facilitano l’apprendimento e stimolano la partecipazione.</p>
+        </div>
+        <div class="card">
+          <h3>Macchinette in succursale</h3>
+          <p>Vogliamo riportare le macchinette in succursale per garantire gli stessi servizi anche lì, evitando disparità con la sede principale.</p>
+        </div>
+        <div class="card">
+          <h3>Riapertura della biblioteca scolastica</h3>
+          <p>Vogliamo riaprire la biblioteca per offrire agli studenti uno spazio di studio e approfondimento culturale.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="documenti">
+      <h2 class="section-title">📄 Documenti Ufficiali</h2>
+      <div class="cards-container">
+        <div class="card">
+          <h3>Regolamento Scolastico</h3>
+          <p>(PDF) <a href="regolamento_scolastico.pdf" target="_blank" rel="noopener noreferrer">Scarica</a></p>
+        </div>
+        <div class="card">
+          <h3>Regolamento gite</h3>
+          <p>(PDF) <a href="gite.pdf" target="_blank" rel="noopener noreferrer">Scarica</a></p>
+        </div>
+        <div class="card">
+          <h3>Regolamento Aule Tematiche</h3>
+          <p>(PDF) <a href="aule.pdf" target="_blank" rel="noopener noreferrer">Scarica</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="segnalazioni">
+      <h2 class="section-title">✉️ Segnalazioni Studenti</h2>
+      <form onsubmit="inviaSegnalazione(); return false;">
+        <input type="text" id="segnalatore" placeholder="Nome e classe" required />
+        <textarea id="testoSegnalazione" placeholder="Scrivi qui la segnalazione" rows="4" required></textarea>
+        <button type="submit">Invia Segnalazione</button>
+      </form>
+      <p id="confermaSegnalazione" style="color: var(--main-color); margin-top: 1rem;"></p>
+    </section>
+
+    <section class="section" id="impostazioni">
+      <h2 class="section-title">⚙️ Impostazioni</h2>
+      <div class="settings-group">
+        <h3>Tema e Colori</h3>
+        <div class="color-picker-container">
+            <label for="mainColorPicker">Colore principale:</label>
+            <input type="color" id="mainColorPicker" value="#22c55e">
+        </div>
+      </div>
+      <div class="settings-group">
+        <h3>Sezioni della barra di navigazione</h3>
+        <p>Scegli quali sezioni mostrare nella barra in basso (massimo 3 personalizzabili, oltre a Home e Altro).</p>
+        <div class="toggle-switch-container">
+            <label>Novità</label>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-comunicazioni" data-target="comunicazioni">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-switch-container">
+            <label>Calendario</label>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-calendario" data-target="calendario">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-switch-container">
+            <label>Proposte</label>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-proposte-voti" data-target="proposte-voti">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-switch-container">
+            <label>Tornei</label>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-tornei" data-target="tornei">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-switch-container">
+            <label>Obiettivi</label>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-promesse" data-target="promesse">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-switch-container">
+            <label>Documenti</label>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-documenti" data-target="documenti">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="toggle-switch-container">
+            <label>Segnalazioni</label>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-segnalazioni" data-target="segnalazioni">
+                <span class="slider"></span>
+            </label>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <nav id="bottomNav">
+      </nav>
+  </footer>
+
+  <script>
+    const allAvailableSections = {
+        'home': { icon: '🏠', label: 'Home' },
+        'comunicazioni': { icon: '📢', label: 'Novità' },
+        'calendario': { icon: '📅', label: 'Calendario' },
+        'proposte-voti': { icon: '🗳️', label: 'Proposte' },
+        'tornei': { icon: '🏆', label: 'Tornei' },
+        'promesse': { icon: '🎯', label: 'Obiettivi' },
+        'documenti': { icon: '📄', label: 'Documenti' },
+        'segnalazioni': { icon: '✉️', label: 'Segnalazioni' },
+        'minigames': { icon: '🎮', label: 'Minigames' },
+        'altro': { icon: '☰', label: 'Altro' },
+        'impostazioni': { icon: '⚙️', label: 'Impostazioni' }
+    };
+    
+    // Funzione per mostrare la sezione attiva
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      const sectionToShow = document.getElementById(id);
+      if (sectionToShow) {
+        sectionToShow.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      document.querySelectorAll('#bottomNav .nav-btn').forEach(btn => {
+        if (btn.dataset.target === id) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    // Funzione per gestire i colori e la navbar
+    function initSettings() {
+        const root = document.documentElement;
+        
+        // Gestione del colore principale
+        const mainColorPicker = document.getElementById('mainColorPicker');
+        const savedColor = localStorage.getItem('mainColor');
+        if (savedColor) {
+            root.style.setProperty('--main-color', savedColor);
+            mainColorPicker.value = savedColor;
+            // Aggiorna il meta tag anche all'avvio
+            document.querySelector('meta[name="theme-color"]').content = savedColor;
+        }
+
+        mainColorPicker.addEventListener('input', (event) => {
+            const newColor = event.target.value;
+            root.style.setProperty('--main-color', newColor);
+            localStorage.setItem('mainColor', newColor);
+            // Aggiorna il meta tag quando il colore viene cambiato
+            document.querySelector('meta[name="theme-color"]').content = newColor;
+        });
+
+        // Gestione delle sezioni nella navbar
+        const personalizableSections = ['comunicazioni', 'calendario', 'proposte-voti', 'tornei', 'promesse', 'documenti', 'segnalazioni'];
+        let userChosenSections = localStorage.getItem('userNavSections');
+        if (!userChosenSections) {
+            userChosenSections = ['comunicazioni', 'calendario', 'proposte-voti'];
+        } else {
+            userChosenSections = JSON.parse(userChosenSections);
+        }
+
+        function buildNavbar() {
+            const navBar = document.getElementById('bottomNav');
+            navBar.innerHTML = '';
+            
+            const navItems = ['home', ...userChosenSections.slice(0, 3), 'altro'];
+
+            navItems.forEach(target => {
+                const buttonData = allAvailableSections[target];
+                if (buttonData) {
+                    const button = document.createElement('button');
+                    button.className = 'nav-btn';
+                    button.dataset.target = target;
+                    button.innerHTML = `
+                        <div class="nav-icon-container">${buttonData.icon}</div>
+                        <span class="nav-label">${buttonData.label}</span>
+                    `;
+                    navBar.appendChild(button);
+                }
+            });
+            
+            navBar.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', () => showSection(btn.dataset.target));
+            });
+        }
+        
+        buildNavbar();
+
+        const toggleSwitches = document.querySelectorAll('.toggle-switch input');
+        
+        // Sincronizza lo stato degli interruttori con le sezioni scelte dall'utente
+        toggleSwitches.forEach(input => {
+            if (userChosenSections.includes(input.dataset.target)) {
+                input.checked = true;
+            } else {
+                input.checked = false;
+            }
+
+            input.addEventListener('change', () => {
+                const checkedToggles = Array.from(toggleSwitches).filter(toggle => toggle.checked);
+                
+                if (checkedToggles.length > 3) {
+                    alert('Puoi selezionare un massimo di 3 sezioni per la barra di navigazione.');
+                    input.checked = false;
+                } else {
+                    userChosenSections = checkedToggles.map(toggle => toggle.dataset.target);
+                    localStorage.setItem('userNavSections', JSON.stringify(userChosenSections));
+                    buildNavbar();
+                }
+            });
+        });
+    }
+
+    // Event listeners per le card
+    document.querySelectorAll('.card-link').forEach(link => {
+        link.addEventListener('click', (event) => {
+            const target = link.getAttribute('href');
+            if (target.startsWith('#')) {
+                event.preventDefault();
+                showSection(target.substring(1));
+            }
+        });
+    });
+
+    // Invia Segnalazione
+    function inviaSegnalazione() {
+      const segnalatore = document.getElementById('segnalatore').value || 'Anonimo';
+      const testo = document.getElementById('testoSegnalazione').value;
+      const destinatario = 'khemiri.1015831@manzoni.edu.it';
+      const oggetto = encodeURIComponent('Segnalazione Studenti da ' + segnalatore);
+      const corpo = encodeURIComponent(testo);
+      const mailtoLink = `mailto:${destinatario}?subject=${oggetto}&body=${corpo}`;
+      window.location.href = mailtoLink;
+    }
+
+    // Inizializza l'app
+    document.addEventListener('DOMContentLoaded', () => {
+      initSettings();
+      showSection('home');
+    });
+  </script>
+</body>
+</html>
