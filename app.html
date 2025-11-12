@@ -172,21 +172,23 @@
       margin: 0;
     }
 
-    /* Elementi specifici */
-    .evento-card {
-      background: var(--main-color);
-      color: white;
-      padding: 14px 20px;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(34, 197, 94, 0.5);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      cursor: pointer;
-    }
-    
-    .evento-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 25px rgba(34, 197, 94, 0.8);
-    }
+  /* Elementi specifici */
+.evento-card {
+  background: var(--main-color);
+  color: white;
+  padding: 14px 20px;
+  border-radius: 15px;
+  /* CORREZIONE: Ombra neutra e semi-trasparente per non far apparire il verde. */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); 
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+}
+ 
+.evento-card:hover {
+  transform: scale(1.05);
+  /* CORREZIONE: Ombra neutra più scura al passaggio del mouse. */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35); 
+}
     
     .evento-title {
       font-size: 16px;
